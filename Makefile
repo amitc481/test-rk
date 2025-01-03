@@ -75,11 +75,15 @@ ifeq ($(CPUFREQ_FIX_BACKPORTED),1)
     EXTRA_CFLAGS += -DCPUFREQ_FIX_BACKPORTED
 endif
 
+ifeq ($(CLASSCREATE_CHANGE_BACKPORTED),1)
+    EXTRA_CFLAGS += -DCLASSCREATE_CHANGE_BACKPORTED
+endif
+
 KBUILD_EXTRA_SYMBOLS:=$(MODULE_SYMVERS_FILE)
 
 obj-m := socwatch2_15.o
 
-socwatch2_15-objs := ./src/sw_driver.o \
+socwatch2_15-objs := ./src/$(FILE_NAME).o \
 	./src/sw_hardware_io.o \
 	./src/sw_output_buffer.o \
 	./src/sw_tracepoint_handlers.o \
@@ -107,6 +111,7 @@ default: kernel_check
 	@echo "************************************************************"
 	@echo "KERNEL_SRC_DIR=$(KERNEL_SRC_DIR)"
 	@echo "CPUFREQ_FIX_BACKPORTED=$(CPUFREQ_FIX_BACKPORTED)"
+	@echo "CLASSCREATE_CHANGE_BACKPORTED=$(CLASSCREATE_CHANGE_BACKPORTED)"
 	@echo "MODULE_SYMVERS_FILE=$(MODULE_SYMVERS_FILE)"
 	@echo "DO_DRIVER_PROFILING=$(DO_PROFILING)"
 	@echo "INCDIR_1=$(INCDIR_1)"
@@ -115,6 +120,3 @@ default: kernel_check
 
 clean: kernel_check
 	make -C $(KERNEL_SRC_DIR) M=$(PWD) clean
-
-modules_install: default
-	make -C $(KERNEL_SRC_DIR) M=$(PWD) modules_install
